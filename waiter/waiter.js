@@ -1,4 +1,4 @@
-import API_BASE from './config.js';
+import API_BASE from '../config.js';
 // ========================================
 // GET LOGGED-IN USER
 // ========================================
@@ -311,7 +311,7 @@ function renderTableStatus() {
                 const confirmFree = confirm(`Table ${table.tableId} is occupied by ${table.customerId}.\n\nDo you want to make this table available?`);
                 if (!confirmFree) return;
                 try {
-                    const response = await fetch(`/api/tables/${table.tableId}`, {
+                    const response = await fetch(`${API_BASE}/tables/${table.tableId}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ customerId: null, status: "Available" })
@@ -341,7 +341,7 @@ function renderTableStatus() {
 
             // CASE 3: Available → Occupy
             try {
-                const response = await fetch(`/api/tables/${table.tableId}`, {
+                const response = await fetch(`${API_BASE}/tables/${table.tableId}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ customerId: order.customerId, status: "Occupied" })

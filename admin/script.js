@@ -1,4 +1,4 @@
-import API_BASE from './config.js';
+import API_BASE from '../config.js';
 // ========================================
 // BASIC ELEMENTS
 // ========================================
@@ -790,7 +790,7 @@ if (waiter) {
     // ========================================
     // ADD WAITER
     // ========================================
-
+const addWaiter = document.getElementById("addWaiter"); 
     addWaiter.addEventListener("click", async function () {
       // --------------------------------
       // NAME
