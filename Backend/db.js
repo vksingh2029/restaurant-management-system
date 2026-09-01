@@ -8,7 +8,17 @@ const dbPath = path.join(
     "database",
     "restaurant.db"
 );
+// ========================================
+// ENSURE DATABASE DIRECTORY EXISTS
+// ========================================
 
+function ensureDirectoryExists(filePath) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`✅ Directory created: ${dir}`);
+    }
+}
 async function createDatabase() {
 
     const SQL = await initSqlJs();
