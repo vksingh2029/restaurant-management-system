@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | TechyBuddies Restaurant</title>
+    <link rel="stylesheet" href="index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="welcome-panel">
+        <div class="brand">
+          <i class="fa-solid fa-utensils"></i><span>TechyBuddies</span>
+        </div>
+        <div>
+          <p class="eyebrow">RESTAURANT MANAGEMENT SYSTEM</p>
+          <h1>Good food,<br /><strong>good mood.</strong></h1>
+          <p class="welcome-copy">
+            Sign in to manage your restaurant, orders and tables.
+          </p>
+        </div>
+      </section>
+
+      <section class="form-panel" aria-labelledby="login-title">
+        <form id="loginForm" novalidate>
+          <div class="form-heading">
+            <div class="login-icon"><i class="fa-solid fa-user-lock"></i></div>
+            <h2 id="login-title">Welcome back</h2>
+            <p>Login to continue to your panel.</p>
+          </div>
+
+          <label for="role">Login as</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-user-tag"></i>
+            <select id="role" name="role" required>
+              <option value="" selected disabled>Select your role</option>
+              <option value="ADMIN">Admin</option>
+              <option value="Waiter">Waiter</option>
+            </select>
+          </div>
+
+          <label for="phone">Phone number</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-phone"></i>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputmode="numeric"
+              maxlength="10"
+              placeholder="Enter 10 digit phone number"
+              required />
+          </div>
+
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock"></i>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter password"
+              required />
+            <button
+              class="password-toggle"
+              id="passwordToggle"
+              type="button"
+              aria-label="Show password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+
+          <p id="formMessage" class="form-message" aria-live="polite"></p>
+          <button class="login-button" type="submit">
+            Login <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </section>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>

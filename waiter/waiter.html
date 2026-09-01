@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant_waiter_panel</title>
+
+    <link rel="stylesheet" href="waiter.css" />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="sidebar">
+        <!-- Logo -->
+        <div>
+          <div class="brand">
+            <div class="chef-icon">
+              <i class="fa-solid fa-utensils"></i>
+            </div>
+
+            <div class="brand-text">
+              <h2>Restaurant</h2>
+              <span>Waiter Panel</span>
+            </div>
+          </div>
+        </div>
+        <div class="left_side">
+          <h3 class="left_side_heading">Selected Food</h3>
+          <!--  Here is selected food  -->
+          <div class="table-container">
+            <table class="menu-table">
+              <thead>
+                <tr>
+                  <th>Dish Name</th>
+
+                  <th>Price <i class="fa-solid fa-indian-rupee-sign"></i></th>
+                  <th>quantity</th>
+                  <th>Ammount<i class="fa-solid fa-indian-rupee-sign"></i></th>
+                </tr>
+              </thead>
+
+              <tbody id="foodTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="order-total">Total: ₹
+            <span id="totalAmount">0</span>
+            
+          </div>
+          <div class="order-total">Total Gst: ₹
+             <span id="Gst">0</span>
+            
+          </div>
+          <div class="order-total">Total With Gst: ₹
+             <span id="totalAmountGst">0</span>
+            
+          </div>
+          
+          
+          <!--tableID for show table no./table ID -->
+          <div class="order-total">
+            Table_ID: <span id="table-id">NaN</span>
+          </div>
+        </div>
+        <!-- ================= LEFT SIDE TABLE ================= -->
+        <!-- ⭐ TABLE STATUS -->
+        <div class="table-status-section">
+          <h3>Table Status</h3>
+
+          <div id="tableStatusContainer" class="table-status-container"></div>
+          <div id="orderDetails"></div>
+          <!-- <div class="order-total">
+            Table_ID: <span id="table-id">Not Selected</span>
+          </div> -->
+
+          <button type="button" id="completeOrderBtn">Payment Done</button>
+
+          <div id="receipt"></div>
+        </div>
+      </aside>
+
+      <!-- ================= RIGHT SIDE ================= -->
+      <main class="main">
+        <div class="navbar">
+          <div class="navbox">
+            <div>Welcome to TechyBuddies</div>
+            <span>Herer is waiter/cashier Panel</span>
+          </div>
+          <!-- FOR VARIABLE USERS -->
+          <div class="waiterlogo">
+            <span>
+              <i class="fa-solid fa-circle-user"></i>
+            </span>
+
+            <!-- <div class="waiter-info"> -->
+            <span id="waiterName"></span>
+            <div id="waiterUserId"></div>
+            <!-- </div> -->
+          </div>
+        </div>
+        <!--  -->
+        <section id="foods">
+          <div class="container_cards" id="foodContainer"></div>
+          <!-- <div id="foodContainer"></div> -->
+        </section>
+      </main>
+    </div>
+
+    <script src="waiter.js"></script>
+  </body>
+</html>

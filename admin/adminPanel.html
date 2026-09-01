@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Admin</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="sidebar">
+        <!-- Logo -->
+        <div class="brand">
+          <div class="chef-icon">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+
+          <div class="brand-text">
+            <h2>Restaurant</h2>
+            <span>Admin Panel</span>
+          </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard-menu active" id="dashboard">
+          <i class="fa-solid fa-house"></i>
+
+          <span>Dashboard</span>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+          <p class="navigation-title">NAVIGATION</p>
+
+          <!-- Menu Management -->
+          <div class="menu-item" id="food">
+            <!-- Menu Management id == menu -->
+
+            <i class="fa-solid fa-book-open"></i>
+
+            <span>Menu Management</span>
+
+            <i class="fa-solid fa-chevron-down arrow"></i>
+          </div>
+
+          <!-- Categories
+          <div class="menu-item">
+            <i class="fa-solid fa-grip"></i>
+
+            <span>Categories</span>
+          </div> -->
+
+          <!-- Orders -->
+          <div class="menu-item" id="order">
+            <i class="fa-solid fa-clipboard-list"></i>
+
+            <span>Orders</span>
+          </div>
+
+          <!-- Tables  -->
+          <!-- table for seat ID= "seatTable" -->
+          <div class="menu-item" id="seatTable">
+            <i class="fa-solid fa-chair"></i>
+
+            <span>Tables</span>
+          </div>
+
+          <!-- Users -->
+          <div class="menu-item" id="waiter">
+            <i class="fa-solid fa-users"></i>
+
+            <span>Waiters</span>
+          </div>
+
+          <!-- Reports -->
+          <div class="menu-item" id="reports">
+            <i class="fa-solid fa-chart-simple"></i>
+
+            <span>Reports</span>
+          </div>
+
+          <!-- Settings -->
+          <div class="menu-item">
+            <i class="fa-solid fa-gear"></i>
+
+            <span>Settings</span>
+          </div>
+        </div>
+
+        <!-- Bottom Food -->
+        <div class="food-bottom">
+          <div class="serving">
+            <i class="fa-solid fa-cloche"></i>
+          </div>
+
+          <!-- <p>Good Food</p>
+            <p>Good Mood</p> -->
+        </div>
+      </aside>
+
+      <!-- ================= RIGHT SIDE ================= -->
+      <main class="main">
+        <div class="navbar">
+          <div class="navbox">
+            <div>Welcome to TechyBuddies</div>
+            <span>Start your Business with us</span>
+          </div>
+          <!-- FOR VARIABLE USERS -->
+          <div class="adminlogo">
+            <span>
+              <i class="fa-solid fa-circle-user"></i>
+            </span>
+
+            <!-- <div class="admin-info"> -->
+            <span id="adminName"></span>
+            <div id="adminUserId"></div>
+            <!-- </div> -->
+          </div>
+        </div>
+        <div class="right-content" id="rightContent"></div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

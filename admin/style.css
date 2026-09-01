@@ -1,0 +1,863 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f8fa;
+}
+:root {
+  --food-bg: #fff3d6;
+  --side-bar: #142235;
+  --brand-col: #f5f5f5;
+  --sub-text: #7c8795;
+}
+
+/*MAIN LAYOUT*/
+
+.layout {
+  display: grid;
+
+  grid-template-columns: 260px 1fr;
+
+  min-height: 100vh;
+}
+
+/*SIDEBAR*/
+
+.sidebar {
+  width: 260px;
+  min-height: 80vh;
+
+  background: var(--side-bar);
+
+  color: white;
+
+  position: relative;
+
+  overflow: hidden;
+  /* 
+    border: 3px solid red;   REMOVE LATER */
+}
+
+/* LOGO */
+
+.brand {
+  height: 100px;
+
+  display: flex;
+  align-items: center;
+
+  padding-left: 30px;
+
+  gap: 12px;
+
+  /* border: 2px solid yellow;  REMOVE LATER */
+}
+
+/* Chef icon */
+
+.chef-icon {
+  width: 48px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffb300;
+
+  font-size: 42px;
+}
+
+/* Restaurant */
+
+.brand-text h2 {
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: var(--brand-col);
+
+  line-height: 25px;
+}
+
+/* Admin Panel */
+
+.brand-text span {
+  color: #ffb300;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  display: block;
+
+  margin-top: 2px;
+}
+
+/* =================================
+       DASHBOARD ACTIVE
+================================= */
+
+.dashboard-menu {
+  height: 55px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 17px;
+
+  padding-left: 27px;
+
+  font-size: 14px;
+
+  color: #e4e8ed;
+
+  border-left: 4px solid transparent;
+
+  /* border: 2px solid orange;  REMOVE LATER */
+}
+
+/* Active Dashboard */
+
+.dashboard-menu.active,
+.menu-item.active {
+  background: #3d3d3d;
+
+  color: #ffc107;
+
+  border-left: 4px solid #ffc107;
+}
+
+.dashboard-menu i {
+  width: 25px;
+
+  text-align: center;
+
+  font-size: 20px;
+}
+
+/* =================================
+       NAVIGATION
+================================= */
+
+.navigation {
+  margin-top: 18px;
+}
+
+.navigation-title {
+  padding-left: 27px;
+
+  margin-bottom: 12px;
+
+  color: #aeb8c5;
+
+  font-size: 12px;
+
+  letter-spacing: 0.3px;
+}
+
+/* =================================
+       MENU ITEMS
+================================= */
+
+.menu-item {
+  height: 56px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 17px;
+
+  padding: 0 25px;
+
+  color: #dce2e9;
+
+  font-size: 14px;
+
+  /* border: 2px solid blue;   REMOVE LATER */
+}
+
+.menu-item i:first-child {
+  width: 24px;
+
+  text-align: center;
+
+  font-size: 21px;
+}
+
+.menu-item:hover {
+  background: #1d3045;
+
+  cursor: pointer;
+}
+
+/* Arrow */
+
+.menu-item .arrow {
+  margin-left: auto;
+
+  font-size: 11px;
+
+  width: auto;
+}
+
+/* =================================
+       BOTTOM FOOD IMAGE
+================================= */
+
+.food-bottom {
+  position: absolute;
+
+  bottom: 25px;
+
+  left: 0;
+
+  width: 100%;
+
+  text-align: center;
+
+  /* border: 2px solid pink;  REMOVE LATER */
+}
+
+.serving {
+  color: #ffb23e;
+
+  font-size: 90px;
+
+  height: 110px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+.food-bottom p {
+  color: #e8cfa4;
+
+  font-family: cursive;
+
+  font-size: 20px;
+
+  line-height: 25px;
+}
+
+/* =================================
+       RIGHT SIDE
+================================= */
+
+.main {
+  background: #f7f8fa;
+
+  /* border: 3px solid purple;  REMOVE LATER */
+}
+
+.navbar {
+  height: 10vh;
+
+  background: white;
+
+  border: 3px solid var(--brand-col);
+  border-radius: 15px;
+  display: flex;
+
+  align-items: center;
+
+  padding-left: 30px;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  background: var(--side-bar);
+  color: #fff;
+}
+
+.navbox :nth-child(2) {
+  color: var(--sub-text);
+  /* font-weight: bolder; */
+  font-size: smaller;
+}
+
+/* right side part  */
+/* RIGHT PAGE */
+
+.right-content {
+  padding: 30px;
+  background: #f5f7fa;
+  min-height: calc(100vh - 10vh);
+}
+
+/* HEADER */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  color: #172334;
+}
+
+.page-header p {
+  margin-top: 6px;
+  color: #7c8795;
+}
+
+/* ADD BUTTON */
+
+.add-btn {
+  border: none;
+  padding: 12px 18px;
+
+  border-radius: 8px;
+
+  background: #f5a900;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #d99100;
+}
+
+/* STATS */
+
+.stats {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 20px;
+
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  border: 1px solid #e4e7eb;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #fff3d6;
+  color: #f5a900;
+
+  font-size: 20px;
+}
+
+.stat-card p {
+  color: #7c8795;
+  font-size: 13px;
+}
+
+.stat-card h2 {
+  margin-top: 5px;
+  color: #172334;
+}
+
+/* TOOLBAR */
+
+.menu-toolbar {
+  background: white;
+
+  padding: 18px;
+
+  border: 1px solid #e4e7eb;
+
+  border-radius: 10px 10px 0 0;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.search-box {
+  width: 350px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  border: 1px solid #d9dee5;
+
+  border-radius: 7px;
+
+  padding: 10px 14px;
+}
+
+.search-box i {
+  color: #8993a0;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+
+  width: 100%;
+
+  font-size: 14px;
+}
+
+.menu-toolbar select {
+  width: 180px;
+
+  padding: 10px;
+
+  border: 1px solid #d9dee5;
+
+  border-radius: 7px;
+
+  outline: none;
+}
+
+/* TABLE */
+
+.table-container {
+  background: white;
+
+  border: 1px solid #e4e7eb;
+
+  border-top: none;
+
+  border-radius: 0 0 10px 10px;
+
+  overflow: hidden;
+}
+
+.menu-table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+/* HERE IS INF-TABLE DESIGN  */
+.menu-table th {
+  background: #f8f9fb;
+
+  padding: 16px;
+
+  text-align: center; /*abhi abhi chang kiya */
+
+  font-size: 13px;
+
+  color: #697586;
+}
+
+.menu-table td {
+  padding: 16px;
+
+  border-top: 1px solid #edf0f3;
+
+  color: #354052;
+
+  font-size: 14px;
+}
+
+/* FOOD ITEM */
+
+.item-name {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  font-weight: 600;
+}
+
+.food-img {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 8px;
+
+  background: var(--food-bg);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 23px;
+}
+
+/* STATUS */
+
+.status {
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.active-status {
+  background: #e8f7ee;
+  color: #219653;
+}
+
+/* ACTION BUTTONS */
+
+.edit-btn,
+.delete-btn {
+  border: none;
+
+  width: 32px;
+  height: 32px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  margin-right: 5px;
+}
+
+.edit-btn {
+  background: #eef3ff;
+  color: #4169e1;
+}
+
+.delete-btn {
+  background: #fff0f0;
+  color: #e74c3c;
+}
+
+/* yaha se order wala table ka h css */
+.table-container {
+  background: white;
+
+  border: 1px solid #e4e7eb;
+
+  border-top: none;
+
+  border-radius: 0 0 10px 10px;
+
+  overflow: hidden;
+}
+/* table {
+    display: table;
+    box-sizing: border-box;
+    border-collapse: separate;
+    text-indent: initial;
+    unicode-bidi: isolate;
+    border-spacing: 2px;
+    background:#fff3d6;
+    } */
+
+/* .table-menu{
+    width: 100%;
+
+    border-collapse: collapse;
+} */
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  /* break-inside: if(media(overflow-block: paged): avoid;);
+    border-color: inherit; */
+}
+tbody {
+  text-align: center;
+}
+td {
+  padding: 20px;
+}
+/* from here css of seat table  */
+.cantainer-table {
+  /* border: 3px dotted black; */
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  /* text-align: center; */
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+.cantainer-table > div {
+  border: 1px solid rgb(9 6 6 / 20%);
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(20, 34, 53, 0.3);
+  border-radius: 5%;
+  height: 30%;
+  width: 20vh;
+  display: flex;
+  /* justify-content: center;
+            align-items: center; */
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 3%;
+  flex-wrap: wrap;
+}
+
+.table-id {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.customer-id {
+  font-size: 12px;
+}
+
+.status-of-table {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.available-table {
+  background: #e8f7ee;
+  color: #219653;
+}
+
+.occupied-table {
+  background: #fdeaea;
+  color: #e53935;
+}
+
+/* Table add pop-up   */
+
+#toast {
+  position: fixed;
+
+  bottom: 25px;
+  left: 50%;
+
+  transform: translate(-50%, 100px);
+
+  background: #142235;
+  color: white;
+
+  padding: 14px 22px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+
+  opacity: 0;
+
+  transition: all 0.3s ease;
+
+  z-index: 9999;
+}
+#toastf {
+  position: fixed;
+
+  bottom: 25px;
+  left: 50%;
+
+  transform: translate(-50%, 100px);
+
+  background: #142235;
+  color: white;
+
+  padding: 14px 22px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+
+  opacity: 0;
+
+  transition: all 0.3s ease;
+
+  z-index: 9999;
+}
+#toastf.showf {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+#toast.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+/* IMAGE OF DASHBOARD */
+
+#img1 {
+  height: 100%;
+  width: 100%;
+}
+
+/* IN ADD FOOD BUTTON- DESIGN OF DELETE BUTTON */
+
+#deletefood {
+  background: transparent; /* Background remove karne ke liye */
+  border: none; /* Default border hatane ke liye */
+  outline: none; /* Click karne par aane wala outline hatane ke liye */
+  cursor: pointer; /* Hover karne par hand cursor */
+  font-size: 18px; /* Icon ka size bada karne ke liye (18px - 22px) */
+  color: #e74c3c; /* Icon ka color (agar red chahiye toh) */
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover effect (optional) */
+#deletefood:hover {
+  transform: scale(1.15); /* Hover karne par thoda sa aur pop hoga */
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  background-color: var(--food-bg);
+}
+
+/* FOR USERNAME AND USERID DESING  */
+
+#adminName {
+  font-weight: bolder;
+  color: var(--brand-col);
+}
+#adminUserId {
+  color: var(--sub-text);
+  text-align: end;
+}
+
+/* ========================================
+   REPORTS SECTION STYLES
+================================= */
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.report-card {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 4px solid #f6c343;
+}
+
+.report-card .label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.report-card .value {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.report-card .label i {
+    margin-right: 8px;
+}
+
+/* Color variants */
+.report-card.revenue { border-left-color: #f6c343; }
+.report-card.revenue .label { color: #f6c343; }
+
+.report-card.orders { border-left-color: #4ecdc4; }
+.report-card.orders .label { color: #4ecdc4; }
+
+.report-card.customers { border-left-color: #45b7d1; }
+.report-card.customers .label { color: #45b7d1; }
+
+.report-card.tables { border-left-color: #ffa94d; }
+.report-card.tables .label { color: #ffa94d; }
+
+.report-card.waiters { border-left-color: #a29bfe; }
+.report-card.waiters .label { color: #a29bfe; }
+
+.report-card.foods { border-left-color: #fd79a8; }
+.report-card.foods .label { color: #fd79a8; }
+
+/* Recent Orders Table */
+.recent-orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.recent-orders-table thead tr {
+    border-bottom: 1px solid #333;
+}
+
+.recent-orders-table th {
+    text-align: left;
+    padding: 12px 8px;
+    color: #888;
+    font-weight: 600;
+}
+
+.recent-orders-table td {
+    padding: 12px 8px;
+    color: #ccc;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.recent-orders-table .order-id {
+    color: #f6c343;
+}
+
+.recent-orders-table .amount {
+    color: #4ecdc4;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.paid {
+    background: #1a3a2a;
+    color: #4ecdc4;
+}
+
+.status-badge.pending {
+    background: #3a2a1a;
+    color: #ffa94d;
+}

@@ -1,0 +1,455 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f8fa;
+}
+:root {
+  --food-bg: #fff3d6;
+  --side-bar: #142235;
+  --brand-col: #f5f5f5;
+  --sub-text: #7c8795;
+  --add-food: #2e7d32;
+  --add-food-hover: #1b5e20;
+  --remove-food:#d32f2f;
+  --remove-food-hover: #b71c1c;
+
+}
+
+/*MAIN LAYOUT*/
+
+.layout {
+  display: grid;
+
+  grid-template-columns: 40vw 58vw;
+
+  min-height: 100vh;
+}
+
+/*SIDEBAR*/
+
+.sidebar {
+  width: 98%;
+  min-height: 80vh;
+
+  background: var(--side-bar);
+
+  color: white;
+
+  position: relative;
+
+  overflow: hidden;
+  /* 
+    border: 3px solid red;   REMOVE LATER */
+    display: flex;
+    flex-direction: column;
+    grid-template-rows: 100px 1fr;
+}
+/* SIDEBAR BOTTOM PART  */
+.left_side{
+  border: 2px solid rgb(2, 29, 44);
+  box-sizing: border-box;
+  border-radius: 16px;
+}
+.left_side_heading{
+  text-align: center;
+}
+/* LOGO */
+
+.brand {
+  height: 100px;
+
+  display: flex;
+  align-items: center;
+
+  padding-left: 30px;
+
+  gap: 12px;
+
+  /* border: 2px solid yellow;  REMOVE LATER */
+}
+
+/* Chef icon */
+
+.chef-icon {
+  width: 48px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffb300;
+
+  font-size: 42px;
+}
+
+/* Restaurant */
+
+.brand-text h2 {
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: var(--brand-col);
+
+  line-height: 25px;
+}
+
+/* waiter Panel */
+
+.brand-text span {
+  color: #ffb300;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  display: block;
+
+  margin-top: 2px;
+}
+
+.main {
+  background: #f7f8fa;
+
+ 
+}
+
+.navbar {
+  height: 10vh;
+
+  background: white;
+
+  border: 3px solid var(--brand-col);
+  border-radius: 15px;
+  display: flex;
+
+  align-items: center;
+
+  padding-left: 30px;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
+  background: var(--side-bar);
+  color: #fff;
+}
+
+.navbox :nth-child(2) {
+  color: var(--sub-text);
+  /* font-weight: bolder; */
+  font-size: smaller;
+}
+
+
+#waiterName {
+  font-weight: bolder;
+  color: var(--brand-col);
+}
+#waiterUserId {
+  color: var(--sub-text);
+  text-align: end;
+}
+/* FOOD CSS */
+     .container_cards {
+        border: 2px solid red;
+        display: flex;
+        flex-wrap: wrap;
+        height: 100vh;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        column-gap: 5%;
+        row-gap: 5%;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+      .food_card {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        /* border: 2px dotted black; */
+        height: 30vh;
+        width: 150px;
+        background-color:   #FFF8E7;
+        row-gap: 3%;
+        font-size: small;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+        transition: 0.25s ease;
+      }
+
+.food_card:hover {
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.18);
+
+    transform: translateY(-4px);
+}
+
+
+      .food_card button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .food-action{
+    background-color: #2e7d32;
+    color: white;
+}
+
+.food-action:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+}
+/* #removeFood {
+    background-color: #d32f2f;
+    color: white;
+}
+
+#removeFood:hover {
+    background-color: #b71c1c;
+    transform: translateY(-1px);
+}
+#addFood:hover{
+  background-color: var(--remove-food-hover);
+    transform: translateY(-1px);
+
+} */
+/* for selecting item and prize */
+.leftbar{
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: center;
+ column-gap: 3px;
+ /* row-gap: 5px; */
+ margin-bottom: 8px;
+ background-color: var(--sub-text);
+}
+
+/* FROM LEFT BAR HERE IS BUTTONS DESIGN */
+
+/* REMOVE FOOD BUTTON */
+.quantity-control button:first-child{
+  background-color: var(--remove-food);
+  /* padding: 20px; */
+  width: 30px;
+  border: none;
+  font-size: large;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.quantity-control button:first-child:hover{
+  background-color: var(--remove-food-hover);
+}
+
+
+/* ADD FOOD BUTTON CSS */
+.quantity-control button:last-child{
+  background-color: var(--add-food);
+    width: 30px;
+  border: none;
+  font-size: large;
+   border-radius: 5px;
+cursor: pointer;
+}
+.quantity-control button:last-child:hover{
+  background-color: var(--add-food-hover);
+}
+
+
+
+
+.menu-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px 0;
+}
+/* thead{
+  font-size: 12px;
+  font-weight: lighter;
+  color: var(--sub-text);
+  display: flex;
+  justify-content: space-between;
+} */
+/* =========================
+   SELECTED FOOD TABLE
+   ========================= */
+
+.menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background-color: #3a4e6a;
+}
+.menu-table thead {
+    color: var(--sub-text);
+    font-size: 15px;
+    background-color: #223248;
+}
+.menu-table thead tr {
+    width: 100%;
+}
+
+/* Header cells */
+.menu-table th {
+    padding: 8px 5px;
+    text-align: center;
+}
+
+/* Body cells */
+.menu-table td {
+    padding: 12px 5px;
+    text-align: center;
+}
+
+/* EIDTHS OF 4 COLUMNS */
+.menu-table th:nth-child(1), .menu-table td:nth-child(1) {
+    width: 30%;
+    font-size: small;
+}
+
+.menu-table th:nth-child(2), .menu-table td:nth-child(2) {
+    width: 20%;
+    font-size: small;
+}
+
+.menu-table th:nth-child(3), .menu-table td:nth-child(3) {
+    width: 25%;
+    font-size: small;
+}
+
+.menu-table th:nth-child(4), .menu-table td:nth-child(4) {
+    width: 25%;
+    font-size: small;
+}
+/* table css */
+.table-status-section {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.table-status-section h3 {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+
+/* Cards ka container */
+
+.table-status-container {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+}
+
+
+/* Single card */
+
+.table-status-card {
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #142235;
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.12);
+
+    transition: 0.2s ease;
+}
+
+.table-status-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.16);
+}
+
+
+/* Table ID */
+
+.table-id {
+    font-weight: bold;
+
+    font-size: 14px;
+}
+
+
+/* Status */
+
+.table-status {
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+/* Customer */
+
+.customer-id {
+    margin-top: 5px;
+
+    font-size: 11px;
+
+    color: #7c8795;
+}
+
+
+/* OCCUPIED */
+
+.occupied-table {
+    border-left: 5px solid #d32f2f;
+}
+
+.occupied-table .table-status {
+    color: #d32f2f;
+}
+
+
+/* AVAILABLE */
+
+.available-table {
+    border-left: 5px solid #2e7d32;
+}
+
+.available-table .table-status {
+    color: #2e7d32;
+}
+/* PAYMENT BUTTON CSS */
+.table-status-section button{
+  background-color: #f7f8fa;
+  border-collapse: collapse;
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
+  margin: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+.table-status-section button:hover{
+  background-color: #c9d7f0;
+  /* color: #84dde7; */
+}
+
+.order-total{
+  margin: 1%;
+}
