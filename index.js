@@ -114,7 +114,7 @@ form.addEventListener("submit", async (event) => {
 
         // Backend ko request bhej rahe hain
         const response = await fetch(
-            "http://localhost:3000/api/login",
+            `${API_BASE}/login`,
             {
 
                 method: "POST",

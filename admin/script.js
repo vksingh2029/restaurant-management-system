@@ -419,7 +419,7 @@ if (food) {
       // ========================================
 
       try {
-        const response = await fetch("/api/foods", {
+        const response = await fetch(`${API_BASE}/foods`, {
           method: "POST",
 
           headers: {
@@ -491,7 +491,7 @@ if (food) {
 
 async function loadFoods() {
   try {
-    const response = await fetch("/api/foods");
+    const response = await fetch(`${API_BASE}/foods`);
 
     if (!response.ok) {
       throw new Error("Failed to load foods");
@@ -608,7 +608,7 @@ if (seatTabel) {
 
     async function loadTables() {
       try {
-        const response = await fetch("/api/tables");
+        const response = await fetch(`${API_BASE}/tables`);
 
         if (!response.ok) {
           throw new Error("Failed to load tables");
@@ -690,7 +690,7 @@ if (seatTabel) {
       }
 
       try {
-        const response = await fetch("/api/tables", {
+        const response = await fetch(`${API_BASE}/tables`, {
           method: "POST",
 
           headers: {
@@ -877,7 +877,7 @@ if (waiter) {
         // DATABASE INSERT
         // =================================
 
-        const response = await fetch("/api/waiters", {
+        const response = await fetch(`${API_BASE}/waiters`, {
           method: "POST",
 
           headers: {
@@ -935,7 +935,7 @@ if (waiter) {
 
 async function loadWaiters() {
   try {
-    const response = await fetch("/api/waiters");
+    const response = await fetch(`${API_BASE}/waiters`);
 
     if (!response.ok) {
       throw new Error("Failed to load waiters");
@@ -1081,7 +1081,7 @@ if (reports) {
 
 async function fetchStats() {
   try {
-    const response = await fetch("/api/stats");
+    const response = await fetch(`${API_BASE}/stats`);
     if (!response.ok) throw new Error("Failed to load stats");
     const data = await response.json();
 
@@ -1303,7 +1303,7 @@ if (order) {
 
 async function fetchOrders() {
     try {
-        const response = await fetch("/api/orders");
+        const response = await fetch(`${API_BASE}/orders`);
         if (!response.ok) throw new Error("Failed to load orders");
         const data = await response.json();
 

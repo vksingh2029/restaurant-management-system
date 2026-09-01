@@ -42,7 +42,7 @@ const foodContainer = document.getElementById("foodContainer");
 
 async function loadFoods() {
     try {
-        const response = await fetch("/api/foods");
+        const response = await fetch(`${API_BASE}/foods`);
         if (!response.ok) throw new Error("Failed to load foods");
         const foods = await response.json();
         renderFoods(foods);
@@ -112,8 +112,8 @@ let order = {
 async function fetchNextIds() {
     try {
         const [orderRes, customerRes] = await Promise.all([
-            fetch("/api/next-order-id"),
-            fetch("/api/next-customer-id")
+            fetch(`${API_BASE}/next-order-id`),
+            fetch(`${API_BASE}/next-customer-id`)
         ]);
         if (!orderRes.ok || !customerRes.ok) {
             throw new Error("Failed to get IDs from server");
@@ -269,7 +269,7 @@ let tables = [];
 
 async function loadTables() {
     try {
-        const response = await fetch("/api/tables");
+        const response = await fetch(`${API_BASE}/tables`);
         if (!response.ok) throw new Error("Failed to load tables");
         const data = await response.json();
         tables = data.map(table => ({
@@ -420,7 +420,7 @@ async function completeOrder() {
     }
     const finalOrder = createFinalOrderObject();
     try {
-        const response = await fetch("/api/orders", {
+        const response = await fetch(`${API_BASE}/orders`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(finalOrder)
