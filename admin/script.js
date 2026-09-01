@@ -1,3 +1,4 @@
+import API_BASE from './config.js';
 // ========================================
 // BASIC ELEMENTS
 // ========================================
@@ -14,7 +15,7 @@ const savedUser = localStorage.getItem("user");
 if (!savedUser) {
   alert("Please login first.");
 
-  window.location.href = "../login.html";
+  window.location.href = "../index.html";
 
   throw new Error("Admin not logged in");
 }

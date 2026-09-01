@@ -1,3 +1,4 @@
+import API_BASE from './config.js';
 // ========================================
 // GET LOGGED-IN USER
 // ========================================
@@ -12,7 +13,7 @@ const loggedInUser =
 
 if (!loggedInUser) {
     alert("Please login first.");
-    window.location.href = "../login.html";
+    window.location.href = "../index.html";
     throw new Error("User not logged in");
 }
 

@@ -31,7 +31,7 @@ async function startServer() {
 
     app.get("/", (req, res) => {
         res.sendFile(
-            path.join(__dirname, "..", "login.html")
+            path.join(__dirname, "..", "index.html")
         );
     });
 
