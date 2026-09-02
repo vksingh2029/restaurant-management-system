@@ -162,11 +162,28 @@ async function initializeNewOrder() {
 // ON PAGE LOAD: INITIALIZE ORDER
 // ========================================
 
-document.addEventListener("DOMContentLoaded", async () => {
-    await initializeNewOrder();
+document.addEventListener("DOMContentLoaded", function () {
+    // Reset order – IDs abhi generate nahi karni
+    order.orderId = null;
+    order.customerId = null;
+    order.tableId = null;
+    order.foodItems = [];
+    selectedFoods = [];
+
+    renderSelectedFoods();
+    document.getElementById("totalAmount").textContent = "0";
+    document.getElementById("totalAmountGst").textContent = "0";
+    document.getElementById("Gst").textContent = "0";
+    document.getElementById("table-id").textContent = "NaN";
+    document.getElementById("receipt").innerHTML = "";
+
+    loadTables();
+    console.log("🔄 Page loaded – No IDs generated. Click 'New Customer' to start.");
 });
-
-
+const newCustomerBtn = document.getElementById("newCustomerBtnAlways");
+    if (newCustomerBtn) {
+        newCustomerBtn.addEventListener("click", startNewOrder);
+    }
 // ========================================
 // FUNCTION WHEN WAITER ADDS FOOD
 // ========================================
@@ -416,6 +433,11 @@ async function completeOrder() {
     }
     if (order.tableId === null) {
         alert("Please select a table first.");
+        return;
+    }
+    // ✅ Check – IDs must exist
+    if (!order.orderId || !order.customerId) {
+        alert("Please start a new order first by clicking 'New Customer'.");
         return;
     }
     const finalOrder = createFinalOrderObject();
