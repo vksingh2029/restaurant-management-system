@@ -354,74 +354,141 @@ async function startServer() {
     // CREATE ORDER API
     // ========================================
 
+    // app.post("/api/orders", (req, res) => {
+    //     const {
+    //         orderId,
+    //         customerId,
+    //         tableId,
+    //         waiterId,
+    //         foodItems,
+    //         totalAmount,
+    //         paymentStatus
+    //     } = req.body;
+
+    //     if (!orderId || !customerId || !tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
+    //         return res.status(400).json({
+    //             success: false,
+    //             message: "Incomplete order data"
+    //         });
+    //     }
+
+    //     try {
+    //         // Check duplicate order ID (just in case)
+    //         const existingOrder = db.exec(`SELECT order_id FROM orders WHERE order_id = ?`, [orderId]);
+    //         if (existingOrder.length > 0 && existingOrder[0].values.length > 0) {
+    //             return res.status(409).json({ success: false, message: "Order ID already exists" });
+    //         }
+
+    //         // Insert customer
+    //         db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
+
+    //         // Insert order
+    //         db.run(`
+    //             INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
+    //             VALUES (?, ?, ?, ?, ?, ?);
+    //         `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
+
+    //         // Insert order items
+    //         foodItems.forEach(food => {
+    //             db.run(`
+    //                 INSERT INTO order_items (order_id, food_id, quantity, price)
+    //                 VALUES (?, ?, ?, ?);
+    //             `, [orderId, food.food_id, food.quantity, food.price]);
+    //         });
+
+    //         // Insert payment
+    //         db.run(`
+    //             INSERT INTO payments (order_id, amount, payment_status)
+    //             VALUES (?, ?, ?);
+    //         `, [orderId, totalAmount, "PAID"]);
+
+    //         saveDatabase(db);
+
+    //         res.status(201).json({
+    //             success: true,
+    //             message: "Order saved successfully",
+    //             order: {
+    //                 order_id: orderId,
+    //                 customer_id: customerId,
+    //                 table_id: tableId,
+    //                 waiter_id: waiterId,
+    //                 total_amount: totalAmount,
+    //                 payment_status: paymentStatus || "PAID"
+    //             }
+    //         });
+
+    //     } catch (error) {
+    //         console.error("Create order error:", error);
+    //         res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
+    //     }
+    // });
     app.post("/api/orders", (req, res) => {
-        const {
-            orderId,
-            customerId,
-            tableId,
-            waiterId,
-            foodItems,
-            totalAmount,
-            paymentStatus
-        } = req.body;
+    const { tableId, waiterId, foodItems, totalAmount, paymentStatus } = req.body;
 
-        if (!orderId || !customerId || !tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
-            return res.status(400).json({
-                success: false,
-                message: "Incomplete order data"
-            });
-        }
+    // Validate required fields (no orderId/customerId needed)
+    if (!tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
+        return res.status(400).json({ success: false, message: "Incomplete order data" });
+    }
 
-        try {
-            // Check duplicate order ID (just in case)
-            const existingOrder = db.exec(`SELECT order_id FROM orders WHERE order_id = ?`, [orderId]);
-            if (existingOrder.length > 0 && existingOrder[0].values.length > 0) {
-                return res.status(409).json({ success: false, message: "Order ID already exists" });
-            }
+    try {
+        // 🔥 Generate new order ID
+        db.run(`UPDATE counters SET value = value + 1 WHERE name = 'order_counter';`);
+        const orderResult = db.exec(`SELECT value FROM counters WHERE name = 'order_counter';`);
+        const orderCounter = orderResult[0].values[0][0];
+        const orderId = "ORD" + String(orderCounter).padStart(3, "0");
 
-            // Insert customer
-            db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
+        // 🔥 Generate new customer ID
+        db.run(`UPDATE counters SET value = value + 1 WHERE name = 'customer_counter';`);
+        const customerResult = db.exec(`SELECT value FROM counters WHERE name = 'customer_counter';`);
+        const customerCounter = customerResult[0].values[0][0];
+        const customerId = "C" + String(customerCounter).padStart(3, "0");
 
-            // Insert order
+        // Insert customer
+        db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
+
+        // Insert order
+        db.run(`
+            INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
+            VALUES (?, ?, ?, ?, ?, ?);
+        `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
+
+        // Insert order items
+        foodItems.forEach(food => {
             db.run(`
-                INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
-                VALUES (?, ?, ?, ?, ?, ?);
-            `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
+                INSERT INTO order_items (order_id, food_id, quantity, price)
+                VALUES (?, ?, ?, ?);
+            `, [orderId, food.food_id, food.quantity, food.price]);
+        });
 
-            // Insert order items
-            foodItems.forEach(food => {
-                db.run(`
-                    INSERT INTO order_items (order_id, food_id, quantity, price)
-                    VALUES (?, ?, ?, ?);
-                `, [orderId, food.food_id, food.quantity, food.price]);
-            });
+        // Insert payment
+        db.run(`
+            INSERT INTO payments (order_id, amount, payment_status)
+            VALUES (?, ?, ?);
+        `, [orderId, totalAmount, "PAID"]);
 
-            // Insert payment
-            db.run(`
-                INSERT INTO payments (order_id, amount, payment_status)
-                VALUES (?, ?, ?);
-            `, [orderId, totalAmount, "PAID"]);
+        // ⭐ Update table with real customer ID (optional but recommended)
+        db.run(`
+            UPDATE restaurant_tables
+            SET customer_id = ?
+            WHERE table_id = ?;
+        `, [customerId, tableId]);
 
-            saveDatabase(db);
+        saveDatabase(db);
 
-            res.status(201).json({
-                success: true,
-                message: "Order saved successfully",
-                order: {
-                    order_id: orderId,
-                    customer_id: customerId,
-                    table_id: tableId,
-                    waiter_id: waiterId,
-                    total_amount: totalAmount,
-                    payment_status: paymentStatus || "PAID"
-                }
-            });
+        res.status(201).json({
+            success: true,
+            message: "Order saved successfully",
+            order: { order_id: orderId, customer_id: customerId, table_id: tableId, waiter_id: waiterId, total_amount: totalAmount, payment_status: paymentStatus || "PAID" }
+        });
 
-        } catch (error) {
-            console.error("Create order error:", error);
-            res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
-        }
-    });
+    } catch (error) {
+        console.error("Create order error:", error);
+        res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
+    }
+});
+
+
+
  // ========================================
 // ⭐ STATS API (For Reports) – FIXED
 // ========================================

@@ -1,15 +1,10 @@
 import API_BASE from '../config.js';
+
 // ========================================
 // GET LOGGED-IN USER
 // ========================================
 
-const loggedInUser =
-    JSON.parse(localStorage.getItem("user"));
-
-
-// ========================================
-// CHECK LOGIN
-// ========================================
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
 if (!loggedInUser) {
     alert("Please login first.");
@@ -17,24 +12,17 @@ if (!loggedInUser) {
     throw new Error("User not logged in");
 }
 
-
-// ========================================
-// WAITER INFORMATION
-// ========================================
-
 const waiterName = loggedInUser.name;
 const waiterUserId = loggedInUser.user_id;
 
 document.getElementById("waiterName").textContent = waiterName;
 document.getElementById("waiterUserId").textContent = waiterUserId;
 
-
 // ========================================
 // FOOD CONTAINER
 // ========================================
 
 const foodContainer = document.getElementById("foodContainer");
-
 
 // ========================================
 // LOAD FOODS FROM DATABASE
@@ -51,11 +39,6 @@ async function loadFoods() {
         alert("Foods load nahi ho paaye.");
     }
 }
-
-
-// ========================================
-// RENDER FOODS
-// ========================================
 
 function renderFoods(foods) {
     foodContainer.innerHTML = "";
@@ -78,25 +61,13 @@ function renderFoods(foods) {
     });
 }
 
-
-// ========================================
-// LOAD FOOD
-// ========================================
-
 loadFoods();
 
-
 // ========================================
-// SELECTED FOODS
+// SELECTED FOODS & ORDER
 // ========================================
 
 let selectedFoods = [];
-
-
-// ========================================
-// ORDER OBJECT (will be populated with server IDs)
-// ========================================
-
 let order = {
     orderId: null,
     customerId: null,
@@ -104,66 +75,37 @@ let order = {
     foodItems: []
 };
 
-
 // ========================================
-// FUNCTION TO FETCH NEXT IDs FROM SERVER
-// ========================================
-
-async function fetchNextIds() {
-    try {
-        const [orderRes, customerRes] = await Promise.all([
-            fetch(`${API_BASE}/next-order-id`),
-            fetch(`${API_BASE}/next-customer-id`)
-        ]);
-        if (!orderRes.ok || !customerRes.ok) {
-            throw new Error("Failed to get IDs from server");
-        }
-        const orderData = await orderRes.json();
-        const customerData = await customerRes.json();
-        return {
-            orderId: orderData.orderId,
-            customerId: customerData.customerId
-        };
-    } catch (error) {
-        console.error("Fetch IDs error:", error);
-        alert("IDs generate nahi ho paaye. Please try again.");
-        return null;
-    }
-}
-
-
-// ========================================
-// INITIALIZE NEW ORDER (fetch IDs)
+// FETCH NEXT IDs FROM SERVER
 // ========================================
 
-async function initializeNewOrder() {
-    const ids = await fetchNextIds();
-    if (!ids) return false;
-    order.orderId = ids.orderId;
-    order.customerId = ids.customerId;
-    order.tableId = null;
-    order.foodItems = [];
-    selectedFoods = [];
-    // Reset UI
-    renderSelectedFoods();
-    document.getElementById("totalAmount").textContent = "0";
-    document.getElementById("totalAmountGst").textContent = "0";
-    document.getElementById("Gst").textContent = "0";
-    document.getElementById("table-id").textContent = "NaN";
-    document.getElementById("receipt").innerHTML = "";
-    // Refresh tables to reflect current status
-    await loadTables();
-    console.log("New order initialized:", order);
-    return true;
-}
-
+// async function fetchNextIds() {
+//     try {
+//         const [orderRes, customerRes] = await Promise.all([
+//             fetch(`${API_BASE}/next-order-id`),
+//             fetch(`${API_BASE}/next-customer-id`)
+//         ]);
+//         if (!orderRes.ok || !customerRes.ok) {
+//             throw new Error("Failed to get IDs from server");
+//         }
+//         const orderData = await orderRes.json();
+//         const customerData = await customerRes.json();
+//         return {
+//             orderId: orderData.orderId,
+//             customerId: customerData.customerId
+//         };
+//     } catch (error) {
+//         console.error("Fetch IDs error:", error);
+//         alert("IDs generate nahi ho paaye. Please try again.");
+//         return null;
+//     }
+// }
 
 // ========================================
-// ON PAGE LOAD: INITIALIZE ORDER
+// PAGE LOAD – NO ID GENERATION + ENABLE BUTTONS
 // ========================================
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Reset order – IDs abhi generate nahi karni
     order.orderId = null;
     order.customerId = null;
     order.tableId = null;
@@ -179,13 +121,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadTables();
     console.log("🔄 Page loaded – No IDs generated. Click 'New Customer' to start.");
-});
-const newCustomerBtn = document.getElementById("newCustomerBtnAlways");
+
+    // Enable New Customer buttons
+    enableNewCustomerButtons(true);
+
+    // ✅ ATTACH CLICK LISTENER FOR PERMANENT BUTTON (YEH LINE ADD HAI)
+    const newCustomerBtn = document.getElementById("newCustomerBtnAlways");
     if (newCustomerBtn) {
         newCustomerBtn.addEventListener("click", startNewOrder);
     }
+});
+
 // ========================================
-// FUNCTION WHEN WAITER ADDS FOOD
+// HELPER: Enable/Disable New Customer Buttons
+// ========================================
+
+function enableNewCustomerButtons(enabled) {
+    const buttons = [
+        document.getElementById("newCustomerBtnAlways"),
+        document.getElementById("newCustomerBtn") // receipt wala
+    ];
+    buttons.forEach(btn => {
+        if (btn) {
+            btn.disabled = !enabled;
+            btn.style.opacity = enabled ? "1" : "0.5";
+            btn.style.cursor = enabled ? "pointer" : "not-allowed";
+        }
+    });
+}
+
+// ========================================
+// ADD FOOD
 // ========================================
 
 function addFood(food) {
@@ -205,7 +171,6 @@ function addFood(food) {
     console.log("SELECTED FOODS:", selectedFoods);
     console.log("ORDER:", order);
 }
-
 
 // ========================================
 // RENDER SELECTED FOOD
@@ -234,11 +199,6 @@ function renderSelectedFoods() {
     calculateTotal();
 }
 
-
-// ========================================
-// QUANTITY +/-
-// ========================================
-
 function increaseQuantity(foodId) {
     const food = selectedFoods.find(item => item.food_id === foodId);
     if (food) {
@@ -260,11 +220,6 @@ function decreaseQuantity(foodId) {
     renderSelectedFoods();
 }
 
-
-// ========================================
-// TOTAL AMOUNT
-// ========================================
-
 function calculateTotal() {
     let total = 0;
     selectedFoods.forEach(food => {
@@ -277,9 +232,8 @@ function calculateTotal() {
     document.getElementById("Gst").textContent = gst;
 }
 
-
 // ========================================
-// TABLE STATUS
+// TABLE MANAGEMENT
 // ========================================
 
 let tables = [];
@@ -301,11 +255,6 @@ async function loadTables() {
     }
 }
 
-
-// ========================================
-// RENDER TABLE STATUS
-// ========================================
-
 function renderTableStatus() {
     const tableContainer = document.getElementById("tableStatusContainer");
     tableContainer.innerHTML = "";
@@ -323,7 +272,7 @@ function renderTableStatus() {
             ${table.customerId ? `<div class="customer-id">Customer: ${table.customerId}</div>` : ""}
         `;
         card.addEventListener("click", async function () {
-            // CASE 1: Occupied → Free
+            // Occupied → Free
             if (table.status === "Occupied") {
                 const confirmFree = confirm(`Table ${table.tableId} is occupied by ${table.customerId}.\n\nDo you want to make this table available?`);
                 if (!confirmFree) return;
@@ -350,13 +299,13 @@ function renderTableStatus() {
                 return;
             }
 
-            // CASE 2: Already selected different table
+            // Already selected different table
             if (order.tableId !== null && order.tableId !== table.tableId) {
                 alert(`You already selected Table ${order.tableId}.\n\nFirst complete this order or select the same table.`);
                 return;
             }
 
-            // CASE 3: Available → Occupy
+            // Available → Occupy
             try {
                 const response = await fetch(`${API_BASE}/tables/${table.tableId}`, {
                     method: "PUT",
@@ -380,20 +329,13 @@ function renderTableStatus() {
     });
 }
 
-
-// ========================================
-// INITIAL TABLE LOAD
-// ========================================
-
 loadTables();
-
 
 // ========================================
 // COMPLETE ORDER BUTTON
 // ========================================
 
 document.getElementById("completeOrderBtn").addEventListener("click", completeOrder);
-
 
 // ========================================
 // CREATE FINAL ORDER OBJECT
@@ -406,7 +348,7 @@ function createFinalOrderObject() {
     });
     const gst = total * 0.18;
     const toPay = total + gst;
-    const finalOrder = {
+    return {
         orderId: order.orderId,
         customerId: order.customerId,
         tableId: order.tableId,
@@ -417,13 +359,48 @@ function createFinalOrderObject() {
         paymentStatus: "PAID",
         date: new Date().toISOString()
     };
-    console.log("FINAL ORDER OBJECT:", finalOrder);
-    return finalOrder;
 }
-
 
 // ========================================
 // COMPLETE ORDER
+// ========================================
+
+// async function completeOrder() {
+//     if (order.foodItems.length === 0) {
+//         alert("Please add food first.");
+//         return;
+//     }
+//     if (order.tableId === null) {
+//         alert("Please select a table first.");
+//         return;
+//     }
+//     if (!order.orderId || !order.customerId) {
+//         alert("Please start a new order first by clicking 'New Customer'.");
+//         return;
+//     }
+//     const finalOrder = createFinalOrderObject();
+//     try {
+//         const response = await fetch(`${API_BASE}/orders`, {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(finalOrder)
+//         });
+//         const result = await response.json();
+//         if (!response.ok) {
+//             throw new Error(result.message || "Order save failed");
+//         }
+//         alert("Payment successful!");
+//         generateReceipt(finalOrder);
+//         // ✅ Payment ke baad New Customer button enable karein
+//         enableNewCustomerButtons(true);
+//         await loadTables();
+//     } catch (error) {
+//         console.error("Order save error:", error);
+//         alert("Order database me save nahi hua.");
+//     }
+// }
+// ========================================
+// COMPLETE ORDER (FIXED)
 // ========================================
 
 async function completeOrder() {
@@ -435,33 +412,84 @@ async function completeOrder() {
         alert("Please select a table first.");
         return;
     }
-    // ✅ Check – IDs must exist
-    if (!order.orderId || !order.customerId) {
-        alert("Please start a new order first by clicking 'New Customer'.");
-        return;
-    }
-    const finalOrder = createFinalOrderObject();
+
+    // Calculate total with GST
+    const totalAmount = calculateTotalAmount();
+
+    // Prepare order data (without orderId/customerId)
+    const orderData = {
+        tableId: order.tableId,
+        waiterId: waiterUserId,
+        foodItems: order.foodItems,
+        totalAmount: totalAmount,
+        paymentStatus: "PAID"
+    };
+
     try {
         const response = await fetch(`${API_BASE}/orders`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(finalOrder)
+            body: JSON.stringify(orderData)
         });
         const result = await response.json();
         if (!response.ok) {
             throw new Error(result.message || "Order save failed");
         }
+
+        // ✅ Server se generated IDs
+        const newOrderId = result.order.order_id;
+        const newCustomerId = result.order.customer_id;
+
+        // Update local order with real IDs
+        order.orderId = newOrderId;
+        order.customerId = newCustomerId;
+
+        // ✅ Complete order object for receipt
+        const finalOrder = {
+            orderId: newOrderId,
+            customerId: newCustomerId,
+            tableId: order.tableId,
+            waiterId: waiterUserId,
+            waiterName: waiterName,
+            foodItems: order.foodItems,
+            totalAmount: totalAmount,
+            paymentStatus: "PAID",
+            date: new Date().toISOString()
+        };
+
         alert("Payment successful!");
-        generateReceipt(finalOrder);
-        // Table remains occupied – refresh table status
+        generateReceipt(finalOrder); // ✅ Full object bhejo
+
+        // Refresh tables and enable button
         await loadTables();
+        enableNewCustomerButtons(true);
+
     } catch (error) {
         console.error("Order save error:", error);
         alert("Order database me save nahi hua.");
     }
 }
 
+// ========================================
+// HELPER: Calculate Total with GST
+// ========================================
 
+// function calculateTotalAmount() {
+//     let total = 0;
+//     order.foodItems.forEach(food => {
+//         total += food.price * food.quantity;
+//     });
+//     return total + (total * 0.18); // with GST
+// }
+
+// Helper: calculate total with GST (same as before)
+function calculateTotalAmount() {
+    let total = 0;
+    order.foodItems.forEach(food => {
+        total += food.price * food.quantity;
+    });
+    return total + (total * 0.18); // with GST
+}
 // ========================================
 // GENERATE RECEIPT
 // ========================================
@@ -510,11 +538,6 @@ function generateReceipt(finalOrder) {
     document.getElementById("newCustomerBtn").addEventListener("click", startNewOrder);
 }
 
-
-// ========================================
-// PRINT RECEIPT
-// ========================================
-
 function printReceipt() {
     const receiptContent = document.getElementById("receipt").innerHTML;
     const printWindow = window.open("", "", "width=500,height=700");
@@ -541,11 +564,6 @@ function printReceipt() {
     printWindow.focus();
     printWindow.print();
 }
-
-
-// ========================================
-// DOWNLOAD RECEIPT
-// ========================================
 
 function downloadReceipt() {
     const receiptContent = document.getElementById("receipt").querySelector(".receipt-content").innerHTML;
@@ -575,29 +593,58 @@ function downloadReceipt() {
     URL.revokeObjectURL(url);
 }
 
-
 // ========================================
-// START NEW ORDER (using server IDs)
+// START NEW ORDER
 // ========================================
 
+// async function startNewOrder() {
+//     // ✅ Disable New Customer buttons – ab click nahi kar sakte
+//     enableNewCustomerButtons(false);
+
+//     // Reset local state
+//     selectedFoods = [];
+//     order.foodItems = [];
+//     order.tableId = null;
+//     // const ids = await fetchNextIds();
+//     if (!ids) {
+//         // Agar fail ho toh enable kar dein
+//         enableNewCustomerButtons(true);
+//         return;
+//     }
+//     order.orderId = ids.orderId;
+//     order.customerId = ids.customerId;
+
+//     renderSelectedFoods();
+//     document.getElementById("totalAmount").textContent = "0";
+//     document.getElementById("totalAmountGst").textContent = "0";
+//     document.getElementById("Gst").textContent = "0";
+//     document.getElementById("table-id").textContent = "NaN";
+//     document.getElementById("receipt").innerHTML = "";
+
+//     await loadTables();
+//     console.log("🆕 New Customer – Order ID:", order.orderId, "Customer ID:", order.customerId);
+// }
+
+let cus=1; // for just short time show C_ID in table card 
 async function startNewOrder() {
-    // Reset local state
+    // Reset local state only – no ID generation
     selectedFoods = [];
     order.foodItems = [];
     order.tableId = null;
-    // Fetch fresh IDs from server
-    const ids = await fetchNextIds();
-    if (!ids) return;
-    order.orderId = ids.orderId;
-    order.customerId = ids.customerId;
-    // UI reset
+    order.orderId = null;
+    order.customerId = null;
+    
+     // ✅ Temporary Customer ID – Table card par turant dikhegi
+    // order.customerId = "C-TEMP-" + Date.now();//Date.now() generate numbers
+    order.customerId = "C-TEMP-" + cus;
+    cus=cus+1;
     renderSelectedFoods();
     document.getElementById("totalAmount").textContent = "0";
     document.getElementById("totalAmountGst").textContent = "0";
     document.getElementById("Gst").textContent = "0";
     document.getElementById("table-id").textContent = "NaN";
     document.getElementById("receipt").innerHTML = "";
-    // Refresh tables (statuses unchanged)
+
     await loadTables();
-    console.log("NEW CUSTOMER ORDER:", order);
+    console.log("🆕 New order started – IDs will be generated on payment.");
 }
