@@ -644,6 +644,15 @@ app.get("/api/orders", (req, res) => {
 startServer();
 
 // ========================================
+// GET ALL ORDERS (For Admin)
+// ========================================
+
+app.get("/api/orders", (req, res) => {
+    // ... existing code ...
+});
+
+// ✅ Add reset route HERE (before app.listen)
+// ========================================
 // TEMPORARY: RESET DATABASE (Remove after use)
 // ========================================
 
@@ -652,14 +661,12 @@ app.post("/api/reset-db", async (req, res) => {
         const fs = require("fs");
         const dbPath = path.join(__dirname, "..", "database", "restaurant.db");
         
-        // Delete old database
         if (fs.existsSync(dbPath)) {
             fs.unlinkSync(dbPath);
             console.log("✅ Old database deleted.");
         }
         
-        // Create fresh database
-        const newDb = await createDatabase();
+        await createDatabase();
         
         res.json({ 
             success: true, 
@@ -672,4 +679,15 @@ app.post("/api/reset-db", async (req, res) => {
             message: error.message 
         });
     }
+});
+
+// ========================================
+// SERVER START
+// ========================================
+
+app.listen(PORT, () => {
+    console.log("================================");
+    console.log("Restaurant Backend Started");
+    console.log("================================");
+    console.log(`http://localhost:${PORT}`);
 });
