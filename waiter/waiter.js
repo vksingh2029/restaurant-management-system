@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Enable New Customer buttons
     enableNewCustomerButtons(true);
 
-    // ✅ ATTACH CLICK LISTENER FOR PERMANENT BUTTON (YEH LINE ADD HAI)
+    // ✅ ATTACH CLICK LISTENER FOR PERMANENT BUTTON
     const newCustomerBtn = document.getElementById("newCustomerBtnAlways");
     if (newCustomerBtn) {
         newCustomerBtn.addEventListener("click", startNewOrder);
@@ -173,7 +173,7 @@ function addFood(food) {
 }
 
 // ========================================
-// RENDER SELECTED FOOD
+// RENDER SELECTED FOOD (UPDATED)
 // ========================================
 
 function renderSelectedFoods() {
@@ -187,17 +187,37 @@ function renderSelectedFoods() {
             <td>₹${food.price}</td>
             <td>
                 <div class="quantity-control">
-                    <button type="button" onclick="decreaseQuantity('${food.food_id}')">−</button>
-                    <span>${food.quantity}</span>
-                    <button type="button" onclick="increaseQuantity('${food.food_id}')">+</button>
+                    <button type="button" class="qty-decrease" data-id="${food.food_id}">−</button>
+                    <span class="qty-value">${food.quantity}</span>
+                    <button type="button" class="qty-increase" data-id="${food.food_id}">+</button>
                 </div>
             </td>
             <td>₹${itemTotal}</td>
         `;
         foodTableBody.appendChild(row);
     });
+
+    // ✅ Attach event listeners for quantity buttons
+    document.querySelectorAll(".qty-increase").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const foodId = btn.dataset.id;
+            increaseQuantity(foodId);
+        });
+    });
+
+    document.querySelectorAll(".qty-decrease").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const foodId = btn.dataset.id;
+            decreaseQuantity(foodId);
+        });
+    });
+
     calculateTotal();
 }
+
+// ========================================
+// QUANTITY +/-
+// ========================================
 
 function increaseQuantity(foodId) {
     const food = selectedFoods.find(item => item.food_id === foodId);
@@ -219,6 +239,10 @@ function decreaseQuantity(foodId) {
     order.foodItems = [...selectedFoods];
     renderSelectedFoods();
 }
+
+// ========================================
+// TOTAL AMOUNT
+// ========================================
 
 function calculateTotal() {
     let total = 0;
@@ -365,44 +389,6 @@ function createFinalOrderObject() {
 // COMPLETE ORDER
 // ========================================
 
-// async function completeOrder() {
-//     if (order.foodItems.length === 0) {
-//         alert("Please add food first.");
-//         return;
-//     }
-//     if (order.tableId === null) {
-//         alert("Please select a table first.");
-//         return;
-//     }
-//     if (!order.orderId || !order.customerId) {
-//         alert("Please start a new order first by clicking 'New Customer'.");
-//         return;
-//     }
-//     const finalOrder = createFinalOrderObject();
-//     try {
-//         const response = await fetch(`${API_BASE}/orders`, {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify(finalOrder)
-//         });
-//         const result = await response.json();
-//         if (!response.ok) {
-//             throw new Error(result.message || "Order save failed");
-//         }
-//         alert("Payment successful!");
-//         generateReceipt(finalOrder);
-//         // ✅ Payment ke baad New Customer button enable karein
-//         enableNewCustomerButtons(true);
-//         await loadTables();
-//     } catch (error) {
-//         console.error("Order save error:", error);
-//         alert("Order database me save nahi hua.");
-//     }
-// }
-// ========================================
-// COMPLETE ORDER (FIXED)
-// ========================================
-
 async function completeOrder() {
     if (order.foodItems.length === 0) {
         alert("Please add food first.");
@@ -458,7 +444,7 @@ async function completeOrder() {
         };
 
         alert("Payment successful!");
-        generateReceipt(finalOrder); // ✅ Full object bhejo
+        generateReceipt(finalOrder);
 
         // Refresh tables and enable button
         await loadTables();
@@ -474,15 +460,6 @@ async function completeOrder() {
 // HELPER: Calculate Total with GST
 // ========================================
 
-// function calculateTotalAmount() {
-//     let total = 0;
-//     order.foodItems.forEach(food => {
-//         total += food.price * food.quantity;
-//     });
-//     return total + (total * 0.18); // with GST
-// }
-
-// Helper: calculate total with GST (same as before)
 function calculateTotalAmount() {
     let total = 0;
     order.foodItems.forEach(food => {
@@ -490,6 +467,7 @@ function calculateTotalAmount() {
     });
     return total + (total * 0.18); // with GST
 }
+
 // ========================================
 // GENERATE RECEIPT
 // ========================================
@@ -597,35 +575,9 @@ function downloadReceipt() {
 // START NEW ORDER
 // ========================================
 
-// async function startNewOrder() {
-//     // ✅ Disable New Customer buttons – ab click nahi kar sakte
-//     enableNewCustomerButtons(false);
+// Temporary counter for showing C_TEMP IDs on table card
+let cus = 1;
 
-//     // Reset local state
-//     selectedFoods = [];
-//     order.foodItems = [];
-//     order.tableId = null;
-//     // const ids = await fetchNextIds();
-//     if (!ids) {
-//         // Agar fail ho toh enable kar dein
-//         enableNewCustomerButtons(true);
-//         return;
-//     }
-//     order.orderId = ids.orderId;
-//     order.customerId = ids.customerId;
-
-//     renderSelectedFoods();
-//     document.getElementById("totalAmount").textContent = "0";
-//     document.getElementById("totalAmountGst").textContent = "0";
-//     document.getElementById("Gst").textContent = "0";
-//     document.getElementById("table-id").textContent = "NaN";
-//     document.getElementById("receipt").innerHTML = "";
-
-//     await loadTables();
-//     console.log("🆕 New Customer – Order ID:", order.orderId, "Customer ID:", order.customerId);
-// }
-
-let cus=1; // for just short time show C_ID in table card 
 async function startNewOrder() {
     // Reset local state only – no ID generation
     selectedFoods = [];
@@ -633,11 +585,11 @@ async function startNewOrder() {
     order.tableId = null;
     order.orderId = null;
     order.customerId = null;
-    
-     // ✅ Temporary Customer ID – Table card par turant dikhegi
-    // order.customerId = "C-TEMP-" + Date.now();//Date.now() generate numbers
+
+    // ✅ Temporary Customer ID – Table card par turant dikhegi
     order.customerId = "C-TEMP-" + cus;
-    cus=cus+1;
+    cus = cus + 1;
+
     renderSelectedFoods();
     document.getElementById("totalAmount").textContent = "0";
     document.getElementById("totalAmountGst").textContent = "0";
