@@ -15,7 +15,6 @@ const app = express();
 
 const PORT = 3000;
 
-
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "..")));
@@ -23,7 +22,6 @@ app.use(express.static(path.join(__dirname, "..")));
 async function startServer() {
 
     const db = await createDatabase();
-
 
     // ========================================
     // LOGIN PAGE
@@ -35,7 +33,6 @@ async function startServer() {
         );
     });
 
-
     // ========================================
     // TEST USERS
     // ========================================
@@ -44,7 +41,6 @@ async function startServer() {
         const result = db.exec(`SELECT * FROM users;`);
         res.json(result);
     });
-
 
     // ========================================
     // LOGIN API
@@ -90,7 +86,6 @@ async function startServer() {
             }
         });
     });
-
 
     // ========================================
     // TABLES APIs
@@ -167,7 +162,6 @@ async function startServer() {
         }
     });
 
-
     // ========================================
     // WAITERS APIs
     // ========================================
@@ -230,7 +224,6 @@ async function startServer() {
             res.status(500).json({ success: false, message: "Failed to load waiters" });
         }
     });
-
 
     // ========================================
     // FOOD APIs
@@ -298,14 +291,12 @@ async function startServer() {
         }
     });
 
-
     // ========================================
     // 🆕 NEXT ORDER ID API
     // ========================================
 
     app.get("/api/next-order-id", (req, res) => {
         try {
-            // Atomically increment counter and return new ID
             db.run(`
                 UPDATE counters
                 SET value = value + 1
@@ -323,7 +314,6 @@ async function startServer() {
             res.status(500).json({ success: false, message: "Failed to generate order ID" });
         }
     });
-
 
     // ========================================
     // 🆕 NEXT CUSTOMER ID API
@@ -349,284 +339,202 @@ async function startServer() {
         }
     });
 
-
     // ========================================
     // CREATE ORDER API
     // ========================================
 
-    // app.post("/api/orders", (req, res) => {
-    //     const {
-    //         orderId,
-    //         customerId,
-    //         tableId,
-    //         waiterId,
-    //         foodItems,
-    //         totalAmount,
-    //         paymentStatus
-    //     } = req.body;
-
-    //     if (!orderId || !customerId || !tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
-    //         return res.status(400).json({
-    //             success: false,
-    //             message: "Incomplete order data"
-    //         });
-    //     }
-
-    //     try {
-    //         // Check duplicate order ID (just in case)
-    //         const existingOrder = db.exec(`SELECT order_id FROM orders WHERE order_id = ?`, [orderId]);
-    //         if (existingOrder.length > 0 && existingOrder[0].values.length > 0) {
-    //             return res.status(409).json({ success: false, message: "Order ID already exists" });
-    //         }
-
-    //         // Insert customer
-    //         db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
-
-    //         // Insert order
-    //         db.run(`
-    //             INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
-    //             VALUES (?, ?, ?, ?, ?, ?);
-    //         `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
-
-    //         // Insert order items
-    //         foodItems.forEach(food => {
-    //             db.run(`
-    //                 INSERT INTO order_items (order_id, food_id, quantity, price)
-    //                 VALUES (?, ?, ?, ?);
-    //             `, [orderId, food.food_id, food.quantity, food.price]);
-    //         });
-
-    //         // Insert payment
-    //         db.run(`
-    //             INSERT INTO payments (order_id, amount, payment_status)
-    //             VALUES (?, ?, ?);
-    //         `, [orderId, totalAmount, "PAID"]);
-
-    //         saveDatabase(db);
-
-    //         res.status(201).json({
-    //             success: true,
-    //             message: "Order saved successfully",
-    //             order: {
-    //                 order_id: orderId,
-    //                 customer_id: customerId,
-    //                 table_id: tableId,
-    //                 waiter_id: waiterId,
-    //                 total_amount: totalAmount,
-    //                 payment_status: paymentStatus || "PAID"
-    //             }
-    //         });
-
-    //     } catch (error) {
-    //         console.error("Create order error:", error);
-    //         res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
-    //     }
-    // });
     app.post("/api/orders", (req, res) => {
-    const { tableId, waiterId, foodItems, totalAmount, paymentStatus } = req.body;
+        const { tableId, waiterId, foodItems, totalAmount, paymentStatus } = req.body;
 
-    // Validate required fields (no orderId/customerId needed)
-    if (!tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
-        return res.status(400).json({ success: false, message: "Incomplete order data" });
-    }
+        if (!tableId || !waiterId || !foodItems || foodItems.length === 0 || totalAmount === undefined) {
+            return res.status(400).json({ success: false, message: "Incomplete order data" });
+        }
 
-    try {
-        // 🔥 Generate new order ID
-        db.run(`UPDATE counters SET value = value + 1 WHERE name = 'order_counter';`);
-        const orderResult = db.exec(`SELECT value FROM counters WHERE name = 'order_counter';`);
-        const orderCounter = orderResult[0].values[0][0];
-        const orderId = "ORD" + String(orderCounter).padStart(3, "0");
+        try {
+            // Generate new order ID
+            db.run(`UPDATE counters SET value = value + 1 WHERE name = 'order_counter';`);
+            const orderResult = db.exec(`SELECT value FROM counters WHERE name = 'order_counter';`);
+            const orderCounter = orderResult[0].values[0][0];
+            const orderId = "ORD" + String(orderCounter).padStart(3, "0");
 
-        // 🔥 Generate new customer ID
-        db.run(`UPDATE counters SET value = value + 1 WHERE name = 'customer_counter';`);
-        const customerResult = db.exec(`SELECT value FROM counters WHERE name = 'customer_counter';`);
-        const customerCounter = customerResult[0].values[0][0];
-        const customerId = "C" + String(customerCounter).padStart(3, "0");
+            // Generate new customer ID
+            db.run(`UPDATE counters SET value = value + 1 WHERE name = 'customer_counter';`);
+            const customerResult = db.exec(`SELECT value FROM counters WHERE name = 'customer_counter';`);
+            const customerCounter = customerResult[0].values[0][0];
+            const customerId = "C" + String(customerCounter).padStart(3, "0");
 
-        // Insert customer
-        db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
+            // Insert customer
+            db.run(`INSERT OR IGNORE INTO customers (customer_id) VALUES (?)`, [customerId]);
 
-        // Insert order
-        db.run(`
-            INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
-            VALUES (?, ?, ?, ?, ?, ?);
-        `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
-
-        // Insert order items
-        foodItems.forEach(food => {
+            // Insert order
             db.run(`
-                INSERT INTO order_items (order_id, food_id, quantity, price)
-                VALUES (?, ?, ?, ?);
-            `, [orderId, food.food_id, food.quantity, food.price]);
-        });
+                INSERT INTO orders (order_id, customer_id, table_id, waiter_id, total_amount, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?);
+            `, [orderId, customerId, tableId, waiterId, totalAmount, paymentStatus || "PAID"]);
 
-        // Insert payment
-        db.run(`
-            INSERT INTO payments (order_id, amount, payment_status)
-            VALUES (?, ?, ?);
-        `, [orderId, totalAmount, "PAID"]);
+            // Insert order items
+            foodItems.forEach(food => {
+                db.run(`
+                    INSERT INTO order_items (order_id, food_id, quantity, price)
+                    VALUES (?, ?, ?, ?);
+                `, [orderId, food.food_id, food.quantity, food.price]);
+            });
 
-        // ⭐ Update table with real customer ID (optional but recommended)
-        db.run(`
-            UPDATE restaurant_tables
-            SET customer_id = ?
-            WHERE table_id = ?;
-        `, [customerId, tableId]);
+            // Insert payment
+            db.run(`
+                INSERT INTO payments (order_id, amount, payment_status)
+                VALUES (?, ?, ?);
+            `, [orderId, totalAmount, "PAID"]);
 
-        saveDatabase(db);
+            // Update table with real customer ID
+            db.run(`
+                UPDATE restaurant_tables
+                SET customer_id = ?
+                WHERE table_id = ?;
+            `, [customerId, tableId]);
 
-        res.status(201).json({
-            success: true,
-            message: "Order saved successfully",
-            order: { order_id: orderId, customer_id: customerId, table_id: tableId, waiter_id: waiterId, total_amount: totalAmount, payment_status: paymentStatus || "PAID" }
-        });
+            saveDatabase(db);
 
-    } catch (error) {
-        console.error("Create order error:", error);
-        res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
-    }
-});
+            res.status(201).json({
+                success: true,
+                message: "Order saved successfully",
+                order: { order_id: orderId, customer_id: customerId, table_id: tableId, waiter_id: waiterId, total_amount: totalAmount, payment_status: paymentStatus || "PAID" }
+            });
 
+        } catch (error) {
+            console.error("Create order error:", error);
+            res.status(500).json({ success: false, message: "Failed to save order", error: error.message });
+        }
+    });
 
+    // ========================================
+    // ⭐ STATS API (For Reports)
+    // ========================================
 
- // ========================================
-// ⭐ STATS API (For Reports) – FIXED
-// ========================================
+    app.get("/api/stats", (req, res) => {
+        try {
+            function getFirstValue(result, index = 0) {
+                if (result.length > 0 && result[0].values.length > 0) {
+                    return result[0].values[0][index];
+                }
+                return 0;
+            }
 
-app.get("/api/stats", (req, res) => {
-    try {
-        // Helper function to safely get first value
-        function getFirstValue(result, index = 0) {
+            const revenueResult = db.exec(`
+                SELECT COALESCE(SUM(total_amount), 0) as total_revenue
+                FROM orders
+                WHERE payment_status = 'PAID';
+            `);
+            const totalRevenue = getFirstValue(revenueResult);
+
+            const ordersResult = db.exec(`SELECT COUNT(*) FROM orders;`);
+            const totalOrders = getFirstValue(ordersResult);
+
+            const customersResult = db.exec(`SELECT COUNT(*) FROM customers;`);
+            const totalCustomers = getFirstValue(customersResult);
+
+            const tablesResult = db.exec(`SELECT COUNT(*) FROM restaurant_tables;`);
+            const totalTables = getFirstValue(tablesResult);
+
+            const waitersResult = db.exec(`
+                SELECT COUNT(*) FROM users
+                WHERE role = 'Waiter' AND status = 'Active';
+            `);
+            const totalWaiters = getFirstValue(waitersResult);
+
+            const foodsResult = db.exec(`SELECT COUNT(*) FROM foods;`);
+            const totalFoods = getFirstValue(foodsResult);
+
+            const recentOrdersResult = db.exec(`
+                SELECT order_id, customer_id, table_id, waiter_id,
+                       total_amount, payment_status, created_at
+                FROM orders
+                ORDER BY created_at DESC
+                LIMIT 5;
+            `);
+
+            let recentOrders = [];
+            if (recentOrdersResult.length > 0 && recentOrdersResult[0].values.length > 0) {
+                recentOrders = recentOrdersResult[0].values.map(row => ({
+                    order_id: row[0],
+                    customer_id: row[1],
+                    table_id: row[2],
+                    waiter_id: row[3],
+                    total_amount: row[4],
+                    payment_status: row[5],
+                    created_at: row[6]
+                }));
+            }
+
+            res.json({
+                success: true,
+                stats: {
+                    totalRevenue,
+                    totalOrders,
+                    totalCustomers,
+                    totalTables,
+                    totalWaiters,
+                    totalFoods,
+                    recentOrders
+                }
+            });
+
+        } catch (error) {
+            console.error("Stats API error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Failed to load stats: " + error.message
+            });
+        }
+    });
+
+    // ========================================
+    // GET ALL ORDERS (For Admin)
+    // ========================================
+
+    app.get("/api/orders", (req, res) => {
+        try {
+            const result = db.exec(`
+                SELECT 
+                    o.order_id,
+                    o.customer_id,
+                    o.table_id,
+                    o.waiter_id,
+                    o.total_amount,
+                    o.payment_status,
+                    o.created_at,
+                    u.name AS waiter_name
+                FROM orders o
+                LEFT JOIN users u ON o.waiter_id = u.user_id
+                ORDER BY o.created_at DESC;
+            `);
+
+            let orders = [];
             if (result.length > 0 && result[0].values.length > 0) {
-                return result[0].values[0][index];
+                orders = result[0].values.map(row => ({
+                    order_id: row[0],
+                    customer_id: row[1],
+                    table_id: row[2],
+                    waiter_id: row[3],
+                    total_amount: row[4],
+                    payment_status: row[5],
+                    created_at: row[6],
+                    waiter_name: row[7] || 'N/A'
+                }));
             }
-            return 0;
+
+            res.json({
+                success: true,
+                orders: orders
+            });
+        } catch (error) {
+            console.error("Get orders error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Failed to load orders"
+            });
         }
-
-        // Total Revenue
-        const revenueResult = db.exec(`
-            SELECT COALESCE(SUM(total_amount), 0) as total_revenue
-            FROM orders
-            WHERE payment_status = 'PAID';
-        `);
-        const totalRevenue = getFirstValue(revenueResult);
-
-        // Total Orders
-        const ordersResult = db.exec(`SELECT COUNT(*) FROM orders;`);
-        const totalOrders = getFirstValue(ordersResult);
-
-        // Total Customers
-        const customersResult = db.exec(`SELECT COUNT(*) FROM customers;`);
-        const totalCustomers = getFirstValue(customersResult);
-
-        // Total Tables
-        const tablesResult = db.exec(`SELECT COUNT(*) FROM restaurant_tables;`);
-        const totalTables = getFirstValue(tablesResult);
-
-        // Total Waiters (Active)
-        const waitersResult = db.exec(`
-            SELECT COUNT(*) FROM users
-            WHERE role = 'Waiter' AND status = 'Active';
-        `);
-        const totalWaiters = getFirstValue(waitersResult);
-
-        // Total Foods
-        const foodsResult = db.exec(`SELECT COUNT(*) FROM foods;`);
-        const totalFoods = getFirstValue(foodsResult);
-
-        // Recent Orders (last 5)
-        const recentOrdersResult = db.exec(`
-            SELECT order_id, customer_id, table_id, waiter_id,
-                   total_amount, payment_status, created_at
-            FROM orders
-            ORDER BY created_at DESC
-            LIMIT 5;
-        `);
-
-        let recentOrders = [];
-        if (recentOrdersResult.length > 0 && recentOrdersResult[0].values.length > 0) {
-            recentOrders = recentOrdersResult[0].values.map(row => ({
-                order_id: row[0],
-                customer_id: row[1],
-                table_id: row[2],
-                waiter_id: row[3],
-                total_amount: row[4],
-                payment_status: row[5],
-                created_at: row[6]
-            }));
-        }
-
-        res.json({
-            success: true,
-            stats: {
-                totalRevenue,
-                totalOrders,
-                totalCustomers,
-                totalTables,
-                totalWaiters,
-                totalFoods,
-                recentOrders
-            }
-        });
-
-    } catch (error) {
-        console.error("Stats API error:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to load stats: " + error.message
-        });
-    }
-});
-
-// ========================================
-// GET ALL ORDERS (For Admin)
-// ========================================
-
-app.get("/api/orders", (req, res) => {
-    try {
-        // Orders table se saare orders, order items ke saath join karke
-        // But simple approach: orders table + customer, waiter, table info
-        const result = db.exec(`
-            SELECT 
-                o.order_id,
-                o.customer_id,
-                o.table_id,
-                o.waiter_id,
-                o.total_amount,
-                o.payment_status,
-                o.created_at,
-                u.name AS waiter_name
-            FROM orders o
-            LEFT JOIN users u ON o.waiter_id = u.user_id
-            ORDER BY o.created_at DESC;
-        `);
-
-        let orders = [];
-        if (result.length > 0 && result[0].values.length > 0) {
-            orders = result[0].values.map(row => ({
-                order_id: row[0],
-                customer_id: row[1],
-                table_id: row[2],
-                waiter_id: row[3],
-                total_amount: row[4],
-                payment_status: row[5],
-                created_at: row[6],
-                waiter_name: row[7] || 'N/A'
-            }));
-        }
-
-        res.json({
-            success: true,
-            orders: orders
-        });
-    } catch (error) {
-        console.error("Get orders error:", error);
-        res.status(500).json({
-            success: false,
-            message: "Failed to load orders"
-        });
-    }
-});
+    });
 
     // ========================================
     // SERVER START
@@ -642,52 +550,3 @@ app.get("/api/orders", (req, res) => {
 }
 
 startServer();
-
-// ========================================
-// GET ALL ORDERS (For Admin)
-// ========================================
-
-app.get("/api/orders", (req, res) => {
-    // ... existing code ...
-});
-
-// ✅ Add reset route HERE (before app.listen)
-// ========================================
-// TEMPORARY: RESET DATABASE (Remove after use)
-// ========================================
-
-app.post("/api/reset-db", async (req, res) => {
-    try {
-        const fs = require("fs");
-        const dbPath = path.join(__dirname, "..", "database", "restaurant.db");
-        
-        if (fs.existsSync(dbPath)) {
-            fs.unlinkSync(dbPath);
-            console.log("✅ Old database deleted.");
-        }
-        
-        await createDatabase();
-        
-        res.json({ 
-            success: true, 
-            message: "Database reset successfully! New data inserted." 
-        });
-    } catch (error) {
-        console.error("Reset error:", error);
-        res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
-    }
-});
-
-// ========================================
-// SERVER START
-// ========================================
-
-app.listen(PORT, () => {
-    console.log("================================");
-    console.log("Restaurant Backend Started");
-    console.log("================================");
-    console.log(`http://localhost:${PORT}`);
-});
