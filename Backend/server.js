@@ -642,3 +642,34 @@ app.get("/api/orders", (req, res) => {
 }
 
 startServer();
+
+// ========================================
+// TEMPORARY: RESET DATABASE (Remove after use)
+// ========================================
+
+app.post("/api/reset-db", async (req, res) => {
+    try {
+        const fs = require("fs");
+        const dbPath = path.join(__dirname, "..", "database", "restaurant.db");
+        
+        // Delete old database
+        if (fs.existsSync(dbPath)) {
+            fs.unlinkSync(dbPath);
+            console.log("✅ Old database deleted.");
+        }
+        
+        // Create fresh database
+        const newDb = await createDatabase();
+        
+        res.json({ 
+            success: true, 
+            message: "Database reset successfully! New data inserted." 
+        });
+    } catch (error) {
+        console.error("Reset error:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: error.message 
+        });
+    }
+});
