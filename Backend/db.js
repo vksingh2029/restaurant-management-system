@@ -23,12 +23,6 @@ function ensureDirectoryExists(filePath) {
 
 async function createDatabase() {
 
-    // 🔥 FORCE DELETE OLD DATABASE (Temporary – Remove after this deploy)
-    if (fs.existsSync(dbPath)) {
-        fs.unlinkSync(dbPath);
-        console.log("🗑️ Old database deleted. Fresh one will be created.");
-    }
-
     const SQL = await initSqlJs();
 
     let db;
@@ -36,7 +30,7 @@ async function createDatabase() {
     // Ensure database directory exists
     ensureDirectoryExists(dbPath);
 
-    // Agar database already exist karta hai (ab force delete ki wajah se nahi hoga)
+    // Agar database already exist karta hai
     if (fs.existsSync(dbPath)) {
 
         const fileBuffer = fs.readFileSync(dbPath);
